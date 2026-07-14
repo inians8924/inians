@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诺贝尔文学奖 - 测试</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">诺贝尔文学奖</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="history.html">历史</a>
+                <a href="winners.html">获奖者</a>
+                <a href="quotes.html">名言</a>
+                <a href="test.html" class="active">测试</a>
+                <a href="news.html">新闻</a>
+                <a href="about.html">关于</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="loading-skeleton" style="display: block;">
+        <div class="container">
+            <div class="skeleton" style="height: 48px; width: 30%; margin: 0 auto 10px;"></div>
+            <div class="skeleton" style="height: 20px; width: 40%; margin: 0 auto 50px;"></div>
+            <div class="card skeleton-card" style="text-align: center;"><div class="skeleton" style="height: 60px; width: 20%; margin: 0 auto 20px;"></div><div class="skeleton skeleton-title" style="width: 50%; margin: 0 auto;"></div><div class="skeleton skeleton-text" style="width: 80%; margin: 15px auto;"></div><div class="skeleton" style="height: 40px; width: 40%; margin: 20px auto;"></div></div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <div class="container page-container">
+            <img src="每页动态蝴蝶效果.png" class="page-decor butterfly-top-left" alt="butterfly">
+            <img src="每页动态蝴蝶效果.png" class="page-decor butterfly-bottom-right" alt="butterfly">
+            <h1 class="page-title">趣味测试</h1>
+            <p class="page-subtitle">测测你会对哪位作家及作品感兴趣</p>
+
+            <div class="card collage-card breathing" style="text-align: center; padding: 50px;">
+                <h3 class="card-title">开始测试</h3>
+                <p style="color: #4a4a4a; margin-bottom: 30px;">回答10个问题，发现与你最匹配的诺贝尔文学奖作家</p>
+                <button class="btn btn-gold" id="startBtn" style="font-size: 18px; padding: 15px 50px;">开始测试</button>
+            </div>
+
+            <div class="card collage-card" id="quizCard" style="display: none;">
+                <div style="text-align: right; margin-bottom: 20px;">
+                    <span class="gold-text" id="progress">第 1/10 题</span>
+                </div>
+                <h3 class="card-title" id="questionText"></h3>
+                <div id="options" style="display: flex; flex-direction: column; gap: 15px;">
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                    <button class="btn btn-outline" id="prevBtn" disabled>上一题</button>
+                    <button class="btn" id="restartBtn" onclick="restartTest()">重新开始</button>
+                </div>
+            </div>
+
+            <div class="card collage-card" id="resultCard" style="display: none; text-align: center;">
+                <div style="font-size: 64px; margin-bottom: 20px;">🎉</div>
+                <h3 class="card-title">测试结果</h3>
+                <h2 id="author-name" style="color: #8B3A3A; font-size: 28px; margin: 20px 0;"></h2>
+                <p id="author-reason" style="color: #4a4a4a; line-height: 2; margin-bottom: 30px;"></p>
+                <button class="btn btn-gold" onclick="restartTest()">再测一次</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p class="footer-text">© 2026 诺贝尔文学奖介绍 | ecnu-inian</p>
+    </div>
+
+    <button class="back-top-btn" id="backTopBtn">▲</button>
+
+    <script src="script.js"></script>
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const quizCard = document.getElementById('quizCard');
+        const resultCard = document.getElementById('resultCard');
+        const questionText = document.getElementById('questionText');
+        const optionsDiv = document.getElementById('options');
+        const prevBtn = document.getElementById('prevBtn');
+        const progressSpan = document.getElementById('progress');
+
+        let results = new Array(11).fill(0);
+        let qCount = 0;
+        let answerRecord = [];
+
+        function restartTest() {
+            results = new Array(11).fill(0);
+            qCount = 0;
+            answerRecord = [];
+            startBtn.parentElement.style.display = 'block';
+            quizCard.style.display = 'none';
+            resultCard.style.display = 'none';
+        }
+
+        function startTest() {
+            startBtn.parentElement.style.display = 'none';
+            quizCard.style.display = 'block';
+            nextQ();
+        }
+
+        function nextQ() {
+            prevBtn.disabled = (qCount <= 0);
+            progressSpan.textContent = `第 ${qCount + 1}/${quizData.length} 题`;
+            
+            if (qCount < quizData.length) {
+                questionText.textContent = quizData[qCount].q;
+                optionsDiv.innerHTML = '';
+                
+                quizData[qCount].options.forEach((txt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-option';
+                    btn.textContent = txt;
+                    btn.style = `
+                        display: block;
+                        width: 100%;
+                        padding: 15px 20px;
+                        margin: 10px 0;
+                        border: 1px solid rgba(139,58,58,0.3);
+                        background: rgba(139,58,58,0.1);
+                        backdrop-filter: blur(10px);
+                        color: #4a4a4a;
+                        cursor: pointer;
+                        border-radius: 10px;
+                        transition: all 0.3s;
+                        font-size: 16px;
+                        text-align: left;
+                    `;
+                    btn.onmouseover = () => {
+                        btn.style.transform = 'translateX(5px)';
+                        btn.style.background = 'rgba(139,58,58,0.2)';
+                        btn.style.borderColor = 'rgba(139,58,58,0.5)';
+                    };
+                    btn.onmouseout = () => {
+                        btn.style.transform = 'translateX(0)';
+                        btn.style.background = 'rgba(139,58,58,0.1)';
+                        btn.style.borderColor = 'rgba(139,58,58,0.3)';
+                    };
+                    btn.onclick = () => {
+                        answerRecord[qCount] = idx;
+                        results[(qCount + idx) % 11]++;
+                        qCount++;
+                        nextQ();
+                    };
+                    optionsDiv.appendChild(btn);
+                });
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizCard.style.display = 'none';
+            resultCard.style.display = 'block';
+            
+            let maxIdx = results.indexOf(Math.max(...results));
+            document.getElementById('author-name').textContent = authors[maxIdx].name;
+            document.getElementById('author-reason').textContent = authors[maxIdx].reason;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('loading-skeleton').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                startBtn.addEventListener('click', startTest);
+                prevBtn.addEventListener('click', () => {
+                    if (qCount <= 0) return;
+                    qCount--;
+                    const lastSelectIdx = answerRecord[qCount];
+                    results[(qCount + lastSelectIdx) % 11]--;
+                    nextQ();
+                });
+            }, 600);
+            initMusic();
+        });
+
+        const backTopBtn = document.getElementById('backTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                backTopBtn.classList.add('show');
+            } else {
+                backTopBtn.classList.remove('show');
+            }
+        });
+        backTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
